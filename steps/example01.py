@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-
-from behave import when, then, given, model
+from behave import when, then, given
 import time
 
+from codesrepo.dmmodel import bdmodel
 
 menu_links = {
     "新闻": "news",
@@ -14,9 +14,12 @@ menu_links = {
 }
 
 
-@when(u"打开{text}")
+# behave.use_step_matcher('cfparse')
+
+
+@when('打开{text}')
 def open_baidu(context, text):
-    if text == '百度':
+    if text == "百度":
         context.bd.go_to_bdhomepage()
 
 
@@ -57,6 +60,29 @@ def check_current_url(context, menu_item):
 
 @when('open baidu')
 def open_baidu_using_table(context):
+    context.execute_steps('''
+        When 打开百度
+    ''')
+
+    model = getattr(context, "model", None)
+    if not model:
+        context.model = bdmodel()
     for row in context.table:
-      # need to update
-        model.add_user(item_link=row['item_link'], link_page=row['link_page'])
+        context.model.add_menu_links(row['item_link'], row['link_page'])
+
+
+@given('to get a context text')
+def get_context_text(context):
+    context.stored_text = context.text
+
+
+@then('the index of {item_link} is {index}')
+def check_index_of_link(context, item_link, index):
+    real_index = context.model.item_link.index(item_link)
+    assert int(index) == real_index + 1
+
+
+@then('the context text should be right')
+def check_context_text(context):
+    context.stored_text = context.stored_text.strip()
+    assert context.stored_text == 'This is an example to get a text of a step using context.text'

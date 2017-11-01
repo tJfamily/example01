@@ -1,4 +1,5 @@
 Feature: testing menu links
+  @test1
   Scenario Outline: Open each menu item
     When 打开百度
     Then baidu is open
@@ -13,3 +14,9 @@ Feature: testing menu links
         | 地图          | 地图    |
         | 视频          | 视频    |
         | 学术          | 学术    |
+
+    @test2
+  Scenario: open baidu and open news
+    When 打开百度
+    And open menu 新闻
+    Then the right menu link 新闻 is open

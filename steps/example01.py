@@ -21,6 +21,7 @@ menu_links = {
 def open_baidu(context, text):
     if text == "百度":
         context.bd.go_to_bdhomepage()
+        #test
 
 
 @then('baidu is open')
